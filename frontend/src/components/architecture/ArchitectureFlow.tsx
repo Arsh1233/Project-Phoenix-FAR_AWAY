@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { ReactFlow, Background, MarkerType } from '@xyflow/react';
+import { ReactFlow, Background, MarkerType, type Edge } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
 import { CandidateNode, EdgeNode, CloudNode, MonitorNode } from './CustomNodes';
@@ -18,7 +18,7 @@ const initialNodes = [
   { id: 'monitor', type: 'monitor', position: { x: 750, y: 500 }, data: {} },
 ];
 
-const initialEdges = [
+const initialEdges: Edge[] = [
   // React Frontend -> Flask API
   { 
     id: 'e1', source: 'candidate', sourceHandle: 'front-out-bottom', target: 'edge', targetHandle: 'flask-in-top', 
