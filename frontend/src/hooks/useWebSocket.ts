@@ -34,8 +34,8 @@ export function useWebSocket({
   });
   
   const wsRef = useRef<WebSocket | null>(null);
-  const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const healthCheckRef = useRef<NodeJS.Timeout | null>(null);
+  const reconnectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const healthCheckRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const updateHealth = useCallback((status: ExamHealth['status'], message: string) => {
     setHealth({
@@ -75,7 +75,18 @@ export function useWebSocket({
           
           // Handle health updates
           if (message.type === 'health') {
-            const status = message.payload.status || 'green';
+            const rawStatus = message.payload.status || 'healthy';
+            // Map WebSocket status values to ExamHealth status
+            const statusMap: Record<string, 'green' | 'yellow' | 'red'> = {
+              healthy: 'green',
+              degraded: 'yellow',
+              critical: 'red',
+              ping: 'green',
+              green: 'green',
+              yellow: 'yellow',
+              red: 'red',
+            };
+            const status = statusMap[rawStatus] || 'green';
             const msg = message.payload.message || 'System healthy';
             updateHealth(status, msg);
           }

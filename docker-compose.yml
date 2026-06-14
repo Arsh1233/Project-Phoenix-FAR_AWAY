@@ -1,0 +1,91 @@
+version: "3.9"
+
+# =============================================================================
+# Project PHOENIX — Full-Stack Docker Compose
+# Start everything: docker-compose up --build
+# =============================================================================
+
+services:
+
+  # ---------------------------------------------------------------------------
+  # 1. Crypto Service (Backend — Fragment Engine)
+  # ---------------------------------------------------------------------------
+  crypto:
+    build: ./backend
+    container_name: phoenix-crypto
+    ports:
+      - "8080:8080"
+    networks:
+      - phoenix-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8080/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # ---------------------------------------------------------------------------
+  # 2. AI/ML Intelligence Layer
+  # ---------------------------------------------------------------------------
+  aiml:
+    build: ./aiml
+    container_name: phoenix-aiml
+    ports:
+      - "8001:8001"
+    networks:
+      - phoenix-net
+    restart: unless-stopped
+
+  # ---------------------------------------------------------------------------
+  # 3. Blockchain Audit Trail (Mock)
+  # ---------------------------------------------------------------------------
+  blockchain:
+    build: ./blockchain
+    container_name: phoenix-blockchain
+    ports:
+      - "8000:8000"
+    networks:
+      - phoenix-net
+    restart: unless-stopped
+
+  # ---------------------------------------------------------------------------
+  # 4. Frontend (React + Nginx)
+  # ---------------------------------------------------------------------------
+  frontend:
+    build: ./frontend
+    container_name: phoenix-frontend
+    ports:
+      - "3000:3000"
+    networks:
+      - phoenix-net
+    depends_on:
+      - crypto
+    restart: unless-stopped
+
+  # ---------------------------------------------------------------------------
+  # 5. Edge Agent (Exam Center Simulator)
+  # ---------------------------------------------------------------------------
+  edge-agent:
+    build: ./edge-agent
+    container_name: phoenix-edge-agent
+    ports:
+      - "5000:5000"
+    environment:
+      - CRYPTO_URL=http://crypto:8080
+      - AIML_URL=http://aiml:8001
+      - BLOCKCHAIN_URL=http://blockchain:8000
+      - CENTER_ID=edge-001
+    networks:
+      - phoenix-net
+    depends_on:
+      - crypto
+      - aiml
+      - blockchain
+    restart: unless-stopped
+
+# =============================================================================
+# Network
+# =============================================================================
+networks:
+  phoenix-net:
+    driver: bridge

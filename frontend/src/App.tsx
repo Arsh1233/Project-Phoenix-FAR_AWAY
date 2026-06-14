@@ -8,7 +8,7 @@ import './index.css';
 
 function App() {
   const [examStatus, setExamStatus] = useState<ExamStatus>('idle');
-  const [token, setToken] = useState<string | null>(null);
+  const [_token, setToken] = useState<string | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [regeneratingQuestionId, setRegeneratingQuestionId] = useState<string | null>(null);
 

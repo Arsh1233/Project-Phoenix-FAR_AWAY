@@ -10,7 +10,7 @@ interface ExamScreenProps {
   onRegenerateRequest?: (questionId: string) => void;
 }
 
-export function ExamScreen({ sessionId, health, regeneratingQuestionId, onRegenerateComplete, onRegenerateRequest }: ExamScreenProps) {
+export function ExamScreen({ sessionId, health, regeneratingQuestionId, onRegenerateComplete, onRegenerateRequest: _onRegenerateRequest }: ExamScreenProps) {
   // Question state
   const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
   const [questionIndex, setQuestionIndex] = useState(0);
@@ -25,7 +25,7 @@ export function ExamScreen({ sessionId, health, regeneratingQuestionId, onRegene
   // Keystroke tracking
   const keyTimingsRef = useRef<KeyTiming[]>([]);
   const lastKeyTimeRef = useRef<number>(Date.now());
-  const keystrokeIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const keystrokeIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Fetch question
   const fetchQuestion = useCallback(async (index: number, isRegeneration = false) => {

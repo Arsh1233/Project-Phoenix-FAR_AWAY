@@ -36,8 +36,9 @@ export interface WebSocketMessage {
   payload: {
     questionId?: string;
     fragmentId?: string;
-    status?: 'healthy' | 'degraded' | 'critical';
+    status?: 'healthy' | 'degraded' | 'critical' | 'ping';
     message?: string;
+    reason?: string;
   };
   timestamp: number;
 }
