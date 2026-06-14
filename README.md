@@ -7,7 +7,7 @@ A distributed, tamper-proof exam paper distribution system that uses **Shamir's 
 ---
 
 ## 🏗️ Architecture
-<img width="1028" height="773" alt="diagram-export-6-14-2026-11_09_24-AM" src="https://github.com/user-attachments/assets/841fd196-98d2-4f57-a6c1-21c7c7f71dae" />
+<img width="1028" height="696" alt="diagram-export-6-14-2026-11_09_24-AM" src="https://github.com/user-attachments/assets/ec6d720b-a73f-4317-871e-6645a26e9e11" />
 
 
 ## 🌐 Command Center (Website)
