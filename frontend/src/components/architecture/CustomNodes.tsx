@@ -71,7 +71,7 @@ export const CloudNode = () => {
     <div className="bg-blue-50/90 backdrop-blur border-2 border-blue-200 rounded-xl p-5 shadow-lg w-[400px]">
       <h4 className="text-blue-800 font-semibold mb-4 flex items-center gap-2">
         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" /></svg>
-        Cloud / Backend
+        Cloud / Core Backend
       </h4>
       <div className="space-y-4">
         <div className="bg-white p-4 rounded-lg border border-blue-100 shadow-sm relative">
@@ -79,8 +79,8 @@ export const CloudNode = () => {
           <Handle type="target" position={Position.Left} id="crypto-in-left" className="w-2 h-2 bg-blue-500 border-none" style={{ top: '50%' }} />
           {/* Outgoing to Blockchain */}
           <Handle type="source" position={Position.Right} id="crypto-out-right" className="w-2 h-2 bg-blue-500 border-none" style={{ top: '50%' }} />
-          <div className="font-semibold text-ink-900 text-sm">Crypto Service</div>
-          <div className="text-xs text-ink-500">Shamir + Time-Lock</div>
+          <div className="font-semibold text-ink-900 text-sm">Crypto Engine (Go)</div>
+          <div className="text-xs text-ink-500">AES-GCM + Shamir's Sharing</div>
         </div>
         <div className="bg-white p-4 rounded-lg border border-blue-100 shadow-sm relative">
           {/* Incoming from Webcam */}
@@ -91,15 +91,15 @@ export const CloudNode = () => {
           <Handle type="source" position={Position.Bottom} id="ai-out-bottom-ws" className="w-2 h-2 bg-blue-500 border-none" style={{ left: '20%' }} />
           {/* Outgoing to Blockchain */}
           <Handle type="source" position={Position.Right} id="ai-out-right-chain" className="w-2 h-2 bg-blue-500 border-none" style={{ top: '50%' }} />
-          <div className="font-semibold text-ink-900 text-sm">AI Service</div>
-          <div className="text-xs text-ink-500">Leak Detection + Fingerprint</div>
+          <div className="font-semibold text-ink-900 text-sm">AI Analytics Service</div>
+          <div className="text-xs text-ink-500">Identity & Leak Intelligence</div>
         </div>
         <div className="bg-white p-4 rounded-lg border border-blue-100 shadow-sm relative">
           {/* Incoming from Crypto & AI */}
           <Handle type="target" position={Position.Right} id="chain-in-right" className="w-2 h-2 bg-blue-500 border-none" style={{ top: '20%' }} />
           <Handle type="target" position={Position.Right} id="chain-in-right-2" className="w-2 h-2 bg-blue-500 border-none" style={{ top: '80%' }} />
-          <div className="font-semibold text-ink-900 text-sm">Blockchain Audit</div>
-          <div className="text-xs text-ink-500">Hyperledger Mock</div>
+          <div className="font-semibold text-ink-900 text-sm">Audit Trail</div>
+          <div className="text-xs text-ink-500">Immutable Ledger (Hyperledger)</div>
         </div>
       </div>
     </div>

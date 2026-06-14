@@ -19,15 +19,16 @@ export const LeakSimPanel: React.FC = () => {
     addLog('Starting exam session to generate baseline fragments...', 'info');
     try {
       // 1. Start a session
-      await apiService.startExamSession('demo-candidate', 5, 3);
-      addLog(`Session started. Q1 Fragments generated.`, 'success');
+      await apiService.startExamSession('NEET-2026-CAND-77X', 5, 3);
+      addLog(`Session started for Candidate NEET-2026-CAND-77X. Fragments generated.`, 'success');
       
       // Wait a moment for visual effect
       await new Promise(r => setTimeout(r, 1000));
       
       // 2. We need a fragment to leak. For the demo, we'll just pull a fragment from crypto manually or assume Edge has one.
       // Since edge doesn't expose raw fragments, we'll ask crypto for a fake one just to simulate the callback.
-      const frags = await apiService.generateFragments(["Dummy Question for Leak"], 5, 3);
+      const questionText = "Q1: Which of the following proteins is primarily responsible for oxygen transport in human blood? (A) Myoglobin (B) Hemoglobin (C) Cytochrome (D) Keratin";
+      const frags = await apiService.generateFragments([questionText], 5, 3);
       const qId = Object.keys(frags)[0];
       const leakedFragId = frags[qId][0];
       

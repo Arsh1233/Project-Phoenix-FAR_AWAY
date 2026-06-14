@@ -83,6 +83,21 @@ services:
       - blockchain
     restart: unless-stopped
 
+  # ---------------------------------------------------------------------------
+  # 6. Automated End-to-End Demo (Test Orchestration)
+  # ---------------------------------------------------------------------------
+  demo:
+    build: ./demo
+    container_name: phoenix-demo
+    networks:
+      - phoenix-net
+    depends_on:
+      - edge-agent
+      - aiml
+      - crypto
+      - blockchain
+    restart: "no"
+
 # =============================================================================
 # Network
 # =============================================================================

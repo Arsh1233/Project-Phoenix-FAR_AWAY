@@ -12,6 +12,11 @@ class Blockchain:
         self.current_transactions = []
         # Create the genesis block
         self.new_block(previous_hash='1', proof=100)
+        
+        # Seed some historical blocks for demo purposes
+        self.new_transaction("NEET-2026-CAND-001", "frag-a7b8-9f12", "CENTER-MUMBAI-01", time() - 3600)
+        self.new_transaction("NEET-2026-CAND-002", "frag-c3d4-5e6f", "CENTER-DELHI-05", time() - 1800)
+        self.new_transaction("NEET-2026-CAND-003", "frag-g7h8-1i2j", "CENTER-BANGALORE-02", time() - 900)
 
     def new_block(self, proof, previous_hash=None):
         """

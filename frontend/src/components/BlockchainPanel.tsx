@@ -100,15 +100,15 @@ export const BlockchainPanel: React.FC = () => {
                         <div className="pt-3 border-t border-surface-100 mt-3 space-y-2">
                           <div className="flex justify-between">
                             <span className="text-ink-400">Candidate:</span>
-                            <span className="text-ink-900 truncate max-w-[140px]">{block.candidate_id}</span>
+                            <span className="text-ink-900 truncate max-w-[140px]" title={block.candidate_id || 'System'}>{block.candidate_id || 'System'}</span>
                           </div>
                           <div className="flex justify-between">
                             <span className="text-ink-400">Center:</span>
-                            <span className="text-ink-900">{block.center_id}</span>
+                            <span className="text-ink-900" title={block.center_id || 'N/A'}>{block.center_id || 'N/A'}</span>
                           </div>
                           <div className="flex justify-between">
                             <span className="text-ink-400">Fragment:</span>
-                            <span className="text-ink-900 truncate max-w-[140px]">{block.fragment_id}</span>
+                            <span className="text-ink-900 truncate max-w-[140px]" title={block.fragment_id || 'N/A'}>{block.fragment_id || 'N/A'}</span>
                           </div>
                         </div>
                       )}

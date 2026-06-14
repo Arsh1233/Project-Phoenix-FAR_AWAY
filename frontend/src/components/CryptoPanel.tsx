@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { apiService } from '../services/api';
 
 export const CryptoPanel: React.FC = () => {
-  const [questionText, setQuestionText] = useState('What is the capital of France?');
+  const [questionText, setQuestionText] = useState('Identify the correct sequence of phases in the cell cycle: (A) G1 -> S -> G2 -> M (B) M -> G1 -> G2 -> S (C) S -> G1 -> G2 -> M (D) G1 -> G2 -> S -> M');
   const [n, setN] = useState(5);
   const [k, setK] = useState(3);
   const [fragments, setFragments] = useState<string[]>([]);
