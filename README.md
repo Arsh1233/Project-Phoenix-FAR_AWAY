@@ -7,78 +7,35 @@ A distributed, tamper-proof exam paper distribution system that uses **Shamir's 
 ---
 
 ## 🏗️ Architecture
+<img width="1028" height="696" alt="diagram-export-6-14-2026-11_09_24-AM" src="https://github.com/user-attachments/assets/ec6d720b-a73f-4317-871e-6645a26e9e11" />
 
-![Architecture Diagram](architecture_diagram_placeholder.png)
-*(Insert Architecture Diagram PNG here)*
-
-```mermaid
-graph TB
-    subgraph Frontend["🖥️ Frontend (React + Vite)"]
-        UI[Command Center UI<br/>Port 3000]
-    end
-
-    subgraph EdgeAgent["📡 Edge Agent (Flask)"]
-        EA[Exam Session Manager<br/>Fragment Cache<br/>Leak Callback Handler<br/>Port 5000]
-    end
-
-    subgraph Backend["🔐 Crypto Service (FastAPI)"]
-        CS[Fragment Engine<br/>SSS + AES-GCM<br/>Time-Lock Encryption<br/>Port 8080]
-    end
-
-    subgraph AIML["🧠 AI/ML Layer (FastAPI)"]
-        AI[Leak Detector<br/>Keystroke Fingerprint<br/>Shard Distribution AI<br/>Port 8001]
-    end
-
-    subgraph Blockchain["⛓️ Blockchain (FastAPI)"]
-        BC[Mock Audit Trail<br/>Leak Alerting<br/>Chain Verification<br/>Port 8000]
-    end
-
-    subgraph Demo["🧪 Demo Orchestrator (Python)"]
-        DM[Load Tester<br/>Leak Simulator]
-    end
-
-    UI -->|REST / WebSocket| EA
-    EA -->|/fragment/generate<br/>/fragment/assemble| CS
-    EA -->|/leak/check| AI
-    EA -->|/access| BC
-    AI -.->|Leak Callback| EA
-    CS -.->|Audit Log| BC
-    DM -->|Automated Tests| EA
-    DM -->|Leak Triggers| AI
-```
 
 ## 🌐 Command Center (Website)
 
 The Frontend Command Center provides a comprehensive overview of the entire PHOENIX network, allowing administrators to monitor, audit, and simulate events across all microservices.
 
 ### Dashboard
-![Dashboard Screenshot](screenshots/dashboard_placeholder.png)
-*(Insert Dashboard Screenshot here)*
+<img width="1599" height="911" alt="Screenshot 2026-06-14 144113" src="https://github.com/user-attachments/assets/7d06485f-f5e7-4b80-86d2-9c45d1d0d094" />
 Real-time monitoring of active exam centers, network uptime, and fragmented questions across the distribution pipeline.
 
 ### Architecture Flow
-![Architecture Flow Screenshot](screenshots/architecture_flow_placeholder.png)
-*(Insert Architecture Flow Screenshot here)*
+<img width="1102" height="816" alt="Screenshot 2026-06-14 144126" src="https://github.com/user-attachments/assets/26aee91c-4d74-4cba-a0be-6bcb28add3ee" />
 Interactive node-based graph demonstrating how fragments flow from the central Crypto Engine down to the local Edge Agents.
 
 ### Crypto Engine
-![Crypto Engine Screenshot](screenshots/crypto_engine_placeholder.png)
-*(Insert Crypto Engine Screenshot here)*
+<img width="1599" height="910" alt="Screenshot 2026-06-14 144141" src="https://github.com/user-attachments/assets/e5dc628c-1b58-42c1-8c6e-48d0ca45f400" />
 Watch the system dynamically shatter questions into encrypted fragments using Shamir's Secret Sharing and AES-256 encryption.
 
 ### Edge Agent Monitoring
-![Edge Agent Screenshot](screenshots/edge_agent_placeholder.png)
-*(Insert Edge Agent Screenshot here)*
+<img width="1599" height="912" alt="image" src="https://github.com/user-attachments/assets/722605fb-2854-4e5b-ad3e-ae52f950b23e" />
 Monitor sub-10 millisecond assembly latencies as students actively take their exams at local edge centers.
 
 ### AI/ML Leak Detector & Security Simulation
-![Leak Detector Screenshot](screenshots/leak_detector_placeholder.png)
-*(Insert Leak Detector Screenshot here)*
+<img width="1599" height="909" alt="Screenshot 2026-06-14 144154" src="https://github.com/user-attachments/assets/6bfe1c4a-39e4-424f-8d6e-e3f658710fab" />
 Simulate dark web leaks by injecting compromised hashes. Watch the AI instantly detect the leak and trigger a cryptographic cascade to regenerate fragments globally.
 
 ### Blockchain Audit Log
-![Blockchain Audit Screenshot](screenshots/blockchain_audit_placeholder.png)
-*(Insert Blockchain Audit Screenshot here)*
+<img width="1599" height="907" alt="Screenshot 2026-06-14 144224" src="https://github.com/user-attachments/assets/81a5a722-89b1-4d8f-a6a0-c81efa8a3ff1" />
 An immutable, timestamped ledger of every single fragment access, providing a completely transparent and tamper-proof chain of custody.
 
 ---
