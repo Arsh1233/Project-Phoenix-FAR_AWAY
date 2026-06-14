@@ -43,6 +43,13 @@ logger = logging.getLogger("edge-agent")
 cache = FragmentCache(default_ttl=3600)
 sessions: dict[str, dict] = {}   # session_id -> session data
 
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+    return response
+
 # ---------------------------------------------------------------------------
 # Sample NEET questions (used when starting an exam)
 # ---------------------------------------------------------------------------

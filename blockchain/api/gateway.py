@@ -7,8 +7,17 @@ from pydantic import BaseModel
 from typing import Optional
 import time
 from mock_chain import Blockchain
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="Project Phoenix - Fragment Audit Trail")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Instantiate the Blockchain
 blockchain = Blockchain()

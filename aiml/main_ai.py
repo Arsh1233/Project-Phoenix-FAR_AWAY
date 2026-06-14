@@ -5,8 +5,17 @@ import pickle
 
 from leak_detector import LeakDetector
 from shard_ai import ShardAI
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="Project PHOENIX Intelligence Layer")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Initialize modules
 leak_detector = LeakDetector()

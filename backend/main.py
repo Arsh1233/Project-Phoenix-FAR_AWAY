@@ -8,8 +8,17 @@ import secrets
 from typing import List, Dict, Any
 
 from crypto_engine import split_secret, recover_secret, encrypt_data, decrypt_data, _eval_at, PRIME
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="Project PHOENIX Core Fragment Engine")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Mock In-Memory Databases
 DB_FRAGMENTS: Dict[str, Dict[str, Any]] = {}

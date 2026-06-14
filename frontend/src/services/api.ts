@@ -1,196 +1,114 @@
-import axios, { AxiosInstance, AxiosError } from 'axios';
-import type { BiometricData, AuthResponse, Question, KeystrokeData } from '../types';
+import axios from 'axios';
+import type { 
+  SystemStatus, 
+  BlockchainLog, 
+  LeakResult, 
+  ExamSession, 
+  ExamQuestion 
+} from '../types';
 
-interface ApiError {
-  message: string;
-  code: string;
-  status: number;
-}
-
-const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+// API Base URLs for local development
+const EDGE_URL = import.meta.env.VITE_EDGE_URL || 'http://localhost:5000';
+const CRYPTO_URL = import.meta.env.VITE_CRYPTO_URL || 'http://localhost:8080';
+const AIML_URL = import.meta.env.VITE_AIML_URL || 'http://localhost:8001';
+const BLOCKCHAIN_URL = import.meta.env.VITE_BLOCKCHAIN_URL || 'http://localhost:8000';
 
 class ApiService {
-  private client: AxiosInstance;
-  private token: string | null = null;
-
-  constructor() {
-    this.client = axios.create({
-      baseURL: API_BASE_URL,
-      timeout: 30000,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    // Request interceptor to add auth token
-    this.client.interceptors.request.use(
-      (config) => {
-        if (this.token) {
-          config.headers.Authorization = `Bearer ${this.token}`;
-        }
-        return config;
-      },
-      (error) => Promise.reject(error)
-    );
-
-    // Response interceptor for error handling
-    this.client.interceptors.response.use(
-      (response) => response,
-      (error: AxiosError) => {
-        if (error.response?.status === 401) {
-          // Token expired or invalid
-          this.clearToken();
-          localStorage.removeItem('phoenix_session');
-          window.location.href = '/';
-        }
-        return Promise.reject(this.handleError(error));
-      }
-    );
-
-    // Load token from localStorage on init
-    this.loadToken();
-  }
-
-  private loadToken(): void {
-    const session = localStorage.getItem('phoenix_session');
-    if (session) {
-      try {
-        const parsed = JSON.parse(session);
-        this.token = parsed.token;
-      } catch {
-        console.error('Failed to parse session');
-      }
-    }
-  }
-
-  private handleError(error: AxiosError): ApiError {
-    if (error.response) {
-      const data = error.response.data as { message?: string; code?: string };
-      return {
-        message: data.message || 'An error occurred',
-        code: data.code || 'UNKNOWN_ERROR',
-        status: error.response.status,
-      };
-    }
-    return {
-      message: error.message || 'Network error',
-      code: 'NETWORK_ERROR',
-      status: 0,
+  
+  // --- Health Checks ---
+  async checkHealth(): Promise<SystemStatus> {
+    const status: SystemStatus = {
+      frontend: { status: 'healthy', latencyMs: 0, lastUpdated: Date.now() },
+      edge: { status: 'offline', latencyMs: 0, lastUpdated: Date.now() },
+      crypto: { status: 'offline', latencyMs: 0, lastUpdated: Date.now() },
+      aiml: { status: 'offline', latencyMs: 0, lastUpdated: Date.now() },
+      blockchain: { status: 'offline', latencyMs: 0, lastUpdated: Date.now() }
     };
+
+    const checkService = async (url: string, key: keyof SystemStatus, path: string = '/health') => {
+      const start = performance.now();
+      try {
+        const res = await axios.get(`${url}${path}`, { timeout: 3000 });
+        status[key] = {
+          status: 'healthy',
+          latencyMs: Math.round(performance.now() - start),
+          lastUpdated: Date.now(),
+          details: res.data
+        };
+      } catch (e) {
+        status[key] = {
+          status: 'offline',
+          latencyMs: 0,
+          lastUpdated: Date.now()
+        };
+      }
+    };
+
+    await Promise.all([
+      checkService(EDGE_URL, 'edge', '/health'),
+      checkService(CRYPTO_URL, 'crypto', '/health'),
+      // AIML doesn't have a direct health endpoint in main_ai.py, checking docs instead
+      checkService(AIML_URL, 'aiml', '/docs'), 
+      checkService(BLOCKCHAIN_URL, 'blockchain', '/logs') // Checking logs acts as health check
+    ]);
+
+    return status;
   }
 
-  setToken(token: string): void {
-    this.token = token;
-  }
-
-  clearToken(): void {
-    this.token = null;
-  }
-
-  // Authentication endpoint
-  async authenticate(biometricData: BiometricData): Promise<AuthResponse> {
-    // For demo: mock response if no backend
-    if (import.meta.env.VITE_MOCK_API === 'true') {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      return {
-        token: 'mock_jwt_token_' + Date.now(),
-        sessionId: 'session_' + Math.random().toString(36).substring(7),
-        expiresAt: Date.now() + 3600000,
-      };
-    }
-
-    const response = await this.client.post<AuthResponse>('/auth', biometricData);
-    return response.data;
-  }
-
-  // Fetch question fragment from Edge Agent
-  async getQuestion(sessionId: string, questionIndex: number): Promise<Question> {
-    if (import.meta.env.VITE_MOCK_API === 'true') {
-      await new Promise(resolve => setTimeout(resolve, 300));
-      return this.getMockQuestion(questionIndex);
-    }
-
-    const response = await this.client.get<Question>(`/questions/${questionIndex}`, {
-      headers: { 'X-Session-Id': sessionId },
+  // --- Exam Simulator (Edge) ---
+  async startExamSession(candidateId: string, n: number = 5, k: number = 3): Promise<ExamSession> {
+    const res = await axios.post(`${EDGE_URL}/exam/start`, {
+      candidate_id: candidateId,
+      n,
+      k
     });
-    return response.data;
+    return res.data;
   }
 
-  // Submit answer
-  async submitAnswer(questionId: string, answer: string, sessionId: string): Promise<void> {
-    if (import.meta.env.VITE_MOCK_API === 'true') {
-      await new Promise(resolve => setTimeout(resolve, 200));
-      return;
-    }
-
-    await this.client.post('/answers', { questionId, answer, sessionId });
+  async getNextQuestion(sessionId: string): Promise<ExamQuestion> {
+    const res = await axios.post(`${EDGE_URL}/exam/next`, { session_id: sessionId });
+    return res.data;
   }
 
-  // Send keystroke timing data for behavioral fingerprinting
-  async sendKeystrokeData(data: KeystrokeData): Promise<void> {
-    if (import.meta.env.VITE_MOCK_API === 'true') {
-      // Silently succeed in mock mode
-      return;
-    }
-
-    await this.client.post('/fingerprint/verify', data);
-  }
-
-  // Request fragment regeneration
-  async requestRegeneration(questionId: string, reason: string): Promise<Question> {
-    if (import.meta.env.VITE_MOCK_API === 'true') {
-      await new Promise(resolve => setTimeout(resolve, 500));
-      return this.getMockQuestion(parseInt(questionId.split('_')[1] || '0'));
-    }
-
-    const response = await this.client.post<Question>('/fragments/regenerate', {
-      questionId,
-      reason,
+  // --- Crypto Lab (Crypto) ---
+  async generateFragments(questions: string[], n: number = 5, k: number = 3): Promise<Record<string, string[]>> {
+    const res = await axios.post(`${CRYPTO_URL}/fragment/generate`, {
+      questions,
+      n,
+      k,
+      t0: 0
     });
-    return response.data;
+    return res.data.question_fragments;
   }
 
-  // Mock question generator
-  private getMockQuestion(index: number): Question {
-    const questions = [
-      {
-        id: 'q_0',
-        text: 'Which cryptographic algorithm is used for asymmetric encryption in PHOENIX?',
-        options: ['AES-256', 'RSA-4096', 'ChaCha20', 'Blowfish'],
-        correctAnswer: 'RSA-4096',
-        fragmentId: 'frag_001',
-      },
-      {
-        id: 'q_1',
-        text: 'What is the primary purpose of Shamir Secret Sharing in the PHOENIX system?',
-        options: ['Data compression', 'Key distribution', 'Error correction', 'Load balancing'],
-        correctAnswer: 'Key distribution',
-        fragmentId: 'frag_002',
-      },
-      {
-        id: 'q_2',
-        text: 'Which component is responsible for real-time threat detection?',
-        options: ['Edge Agent', 'Crypto Service', 'AI Sentinel', 'Storage Node'],
-        correctAnswer: 'AI Sentinel',
-        fragmentId: 'frag_003',
-      },
-      {
-        id: 'q_3',
-        text: 'What happens when a security breach is detected during an exam?',
-        options: ['Session continues', 'Fragment regeneration triggered', 'Results discarded', 'System reboots'],
-        correctAnswer: 'Fragment regeneration triggered',
-        fragmentId: 'frag_004',
-      },
-      {
-        id: 'q_4',
-        text: 'Which hashing algorithm is used for fingerprint verification?',
-        options: ['MD5', 'SHA-1', 'SHA-256', 'BLAKE3'],
-        correctAnswer: 'SHA-256',
-        fragmentId: 'frag_005',
-      },
-    ];
-    
-    return questions[index % questions.length];
+  async assembleFragments(questionId: string, fragmentIds: string[]): Promise<{question_text: string}> {
+    const res = await axios.post(`${CRYPTO_URL}/fragment/assemble`, {
+      question_id: questionId,
+      fragment_ids: fragmentIds
+    });
+    return res.data;
+  }
+
+  // --- Leak Simulation (Edge -> AIML) ---
+  async triggerLeakSimulation(fragmentId: string, questionId: string): Promise<LeakResult> {
+    // We hit the Edge agent's callback endpoint directly to simulate a Dark Web leak detection
+    const res = await axios.post(`${EDGE_URL}/callback/leak`, {
+      fragment_id: fragmentId,
+      question_id: questionId,
+      compromised_hash: 'simulated_leak_' + Date.now().toString(16)
+    });
+    return res.data;
+  }
+
+  // --- Blockchain Audit Trail ---
+  async getBlockchainLogs(): Promise<BlockchainLog> {
+    const res = await axios.get(`${BLOCKCHAIN_URL}/logs`);
+    return res.data;
+  }
+
+  async verifyBlockchain(): Promise<{status: string, message: string}> {
+    const res = await axios.get(`${BLOCKCHAIN_URL}/logs/verify`);
+    return res.data;
   }
 }
 
