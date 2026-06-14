@@ -72,7 +72,7 @@ export const BlockchainPanel: React.FC = () => {
           <div className="flex-1 flex items-center justify-center">
             <div className="w-8 h-8 border-4 border-surface-200 border-t-phoenix-500 rounded-full animate-spin"></div>
           </div>
-        ) : !logs || logs.length === 0 ? (
+        ) : !logs || logs.chain.length === 0 ? (
           <div className="flex-1 flex items-center justify-center text-ink-500">
             No blocks found in the chain.
           </div>
