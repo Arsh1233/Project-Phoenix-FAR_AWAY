@@ -5,7 +5,7 @@
 A distributed, tamper-proof exam paper distribution system that uses **Shamir's Secret Sharing**, **AES-256 encryption**, **behavioral fingerprinting**, and a **blockchain audit trail** to prevent question paper leaks in high-stakes exams like NEET.
 
 ---
-## Demo Video of Prototype - [![Watch the video]](https://youtu.be/vROBmYMAheE)
+## Demo Video of Prototype - [[Watch the video]](https://youtu.be/vROBmYMAheE)
 
 ---
 
