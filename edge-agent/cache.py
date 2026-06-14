@@ -23,6 +23,8 @@ class FragmentCache:
         self._store: dict = {}
         self._lock = threading.Lock()
         self.default_ttl = default_ttl
+        self.hits = 0
+        self.misses = 0
 
     # ------------------------------------------------------------------
     # Core operations
@@ -42,10 +44,13 @@ class FragmentCache:
         with self._lock:
             entry = self._store.get(key)
             if entry is None:
+                self.misses += 1
                 return None
             if time.time() > entry["expires_at"]:
                 del self._store[key]
+                self.misses += 1
                 return None
+            self.hits += 1
             return entry["data"]
 
     def invalidate(self, key: str) -> bool:
@@ -119,6 +124,8 @@ class FragmentCache:
         with self._lock:
             count = len(self._store)
             self._store.clear()
+            self.hits = 0
+            self.misses = 0
         logger.info(f"Cache CLEARED: {count} entries")
         return count
 
@@ -134,8 +141,11 @@ class FragmentCache:
             expired = sum(
                 1 for v in self._store.values() if now > v["expires_at"]
             )
+            hits = self.hits
+            misses = self.misses
         return {
-            "total_entries": total,
-            "expired_entries": expired,
+            "total_items": total,
             "active_entries": total - expired,
+            "hits": hits,
+            "misses": misses,
         }

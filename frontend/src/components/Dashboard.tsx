@@ -4,10 +4,11 @@ import { OverviewPanel } from './OverviewPanel';
 import { CryptoPanel } from './CryptoPanel';
 import { LeakSimPanel } from './LeakSimPanel';
 import { BlockchainPanel } from './BlockchainPanel';
+import { EdgeAgentPanel } from './EdgeAgentPanel';
 import { apiService } from '../services/api';
 import type { SystemStatus } from '../types';
 
-type PanelType = 'overview' | 'crypto' | 'leak' | 'blockchain';
+type PanelType = 'overview' | 'crypto' | 'edge' | 'leak' | 'blockchain';
 
 export const Dashboard: React.FC = () => {
   const [activePanel, setActivePanel] = useState<PanelType>('overview');
@@ -38,6 +39,8 @@ export const Dashboard: React.FC = () => {
         return <OverviewPanel status={status} refreshing={refreshing} onRefresh={fetchStatus} />;
       case 'crypto':
         return <CryptoPanel />;
+      case 'edge':
+        return <EdgeAgentPanel />;
       case 'leak':
         return <LeakSimPanel />;
       case 'blockchain':

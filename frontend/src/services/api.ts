@@ -70,6 +70,16 @@ class ApiService {
     return res.data;
   }
 
+  async getEdgeCacheStats(): Promise<any> {
+    const res = await axios.get(`${EDGE_URL}/cache/stats`);
+    return res.data;
+  }
+
+  async clearEdgeCache(): Promise<{cleared: number}> {
+    const res = await axios.post(`${EDGE_URL}/cache/clear`);
+    return res.data;
+  }
+
   // --- Crypto Lab (Crypto) ---
   async generateFragments(questions: string[], n: number = 5, k: number = 3): Promise<Record<string, string[]>> {
     const res = await axios.post(`${CRYPTO_URL}/fragment/generate`, {

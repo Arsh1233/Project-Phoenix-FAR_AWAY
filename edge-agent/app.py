@@ -200,6 +200,18 @@ def exam_next():
     k = session["k"]
     assembly_ids = fragment_ids[:k]
 
+    # Simulate fetching the actual fragments from the local cache
+    network_fetches = 0
+    for fid in assembly_ids:
+        cached_data = cache.get(fid)
+        if not cached_data:
+            logger.warning(f"Cache MISS for fragment {fid[:8]}... re-fetching from network")
+            network_fetches += 1
+
+    if network_fetches > 0:
+        # Simulate WAN latency to fetch missing fragments from central Crypto Engine
+        time.sleep(0.15 * network_fetches)
+
     # Measure assembly latency
     t0 = time.perf_counter()
     try:
