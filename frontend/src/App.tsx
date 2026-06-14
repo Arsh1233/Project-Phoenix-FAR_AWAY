@@ -104,7 +104,7 @@ function App() {
             <p className="text-xs text-phoenix-muted mb-2 font-mono uppercase">Dev Controls</p>
             <div className="flex gap-2">
               <button
-                onClick={() => simulateRegeneration(currentQuestion?.id || 'q_0')}
+                onClick={() => simulateRegeneration('current')}
                 className="px-3 py-1.5 bg-phoenix-warning/20 text-phoenix-warning text-xs rounded hover:bg-phoenix-warning/30 transition-colors"
               >
                 Regenerate
